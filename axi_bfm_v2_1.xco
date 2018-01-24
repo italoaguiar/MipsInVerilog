@@ -1,0 +1,48 @@
+##############################################################
+#
+# Xilinx Core Generator version 14.7
+# Date: Mon Jan 22 23:18:13 2018
+#
+##############################################################
+#
+#  This file contains the customisation parameters for a
+#  Xilinx CORE Generator IP GUI. It is strongly recommended
+#  that you do not manually alter this file as it may cause
+#  unexpected and unsupported behavior.
+#
+##############################################################
+#
+#  Generated from component: xilinx.com:ip:cdn_axi_bfm:2.1
+#
+##############################################################
+#
+# BEGIN Project Options
+SET addpads = false
+SET asysymbol = true
+SET busformat = BusFormatAngleBracketNotRipped
+SET createndf = false
+SET designentry = VHDL
+SET device = xa6slx4
+SET devicefamily = aspartan6
+SET flowvendor = Other
+SET formalverification = false
+SET foundationsym = false
+SET implementationfiletype = Ngc
+SET package = csg225
+SET removerpms = false
+SET simulationfiles = Behavioral
+SET speedgrade = -3
+SET verilogsim = false
+SET vhdlsim = true
+# END Project Options
+# BEGIN Select
+SELECT AXI_Bus_Functional_Model xilinx.com:ip:cdn_axi_bfm:2.1
+# END Select
+# BEGIN Parameters
+CSET component_name=axi_bfm_v2_1
+# END Parameters
+# BEGIN Extra information
+MISC pkg_timestamp=2012-08-21T16:22:17Z
+# END Extra information
+GENERATE
+# CRC: 2e97a6c1
