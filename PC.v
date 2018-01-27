@@ -20,17 +20,36 @@
 //////////////////////////////////////////////////////////////////////////////////
 module PC(
 	 input [31:0] Input,
+	 input clk,
     output reg [31:0] Output
     );
 	 
-initial
-	begin
-		Output = 'b00000000000000000000000000000000;
-	end
+	 reg [31:0] _pc;
+	 reg start;
+	 
+	 
+	initial
+		begin
+			_pc = 'b00000000000000000000000000000000;
+			start = 0;
+			Output = _pc;
+		end
 
-always @(Input)
-	begin
-		Output = Input;
-	end
+	always @(posedge clk)
+		begin
+			if(start == 1) begin
+				_pc = _pc + 1;
+				Output = _pc;
+			end
+			start = 1;
+		end
+
+	always @(Input)
+		begin
+			if(Input !== 32'bx && Input > 0)
+				begin
+					_pc = Input;
+				end
+		end
 
 endmodule

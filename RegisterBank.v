@@ -27,6 +27,11 @@ module RegisterBank(
     output reg [31:0] ReadData1,
     output reg [31:0] ReadData2
     );
+	 
+	initial begin
+		ReadData1 = 'b00000000000000000000000000000000;
+		ReadData2 = 'b00000000000000000000000000000000;
+	end
 
 	//32 registradores de 32 bits
 	reg [31:0]RegisterMemory[0:31];
@@ -43,21 +48,17 @@ module RegisterBank(
 				end
 		end
 		
-	always @(ReadRegister1 or ReadRegister2 or WriteData or RegWrite)
-		begin
-			if(RegWrite == 1)
-				begin
-					RegisterMemory[WriteRegister] = WriteData;
-					$display("Escrevendo Registrador $t%d: %d", WriteRegister, WriteData);
-				end
-			else
-				begin
-					ReadData1 = RegisterMemory[ReadRegister1];
-					ReadData2 = RegisterMemory[ReadRegister2];
-					$display("Lendo Registrador $t%d: %b  $t%d: %b", ReadRegister1, ReadData1, ReadRegister2, ReadData2);
-				end
-				
+	always @(ReadRegister1 or ReadRegister2)
+		begin				
+			ReadData1 = RegisterMemory[ReadRegister1];
+			ReadData2 = RegisterMemory[ReadRegister2];				
 			
+		end
+		
+	always @(posedge RegWrite or WriteData)
+		begin
+			RegisterMemory[WriteRegister] = WriteData;
+			$display("Escrevendo Registrador $t%d: %d", WriteRegister, WriteData);
 		end
 
 endmodule

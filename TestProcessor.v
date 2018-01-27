@@ -43,7 +43,7 @@ module TestProcessor;
 	wire ZERO;
 	wire [31:0] ULAOutput;
 	wire [31:0] PCInput;
-	reg [31:0] PC;
+	wire [31:0] PC;
 	wire [4:0] WriteRegister;
 	wire [31:0] WriteData;
 	wire [31:0] RegisterData2;	
@@ -57,6 +57,17 @@ module TestProcessor;
 	// Instantiate the Unit Under Test (UUT)
 	
 	assign JumpAddress = {{6{Instruction[25]}}, Instruction[25:0]};
+	
+	PC uu0(
+		.Input(PCInput),
+		.clk(Clk),
+		.Output(PC)
+	);
+	
+	InstructionMemory uu4(
+		.ReadAddress(PC),
+		.Instruction(Instruction)
+	);
 	
 	ALUControl uut (
 		.OpCode(Instruction[5:0]), 
@@ -83,11 +94,6 @@ module TestProcessor;
 		.Control(Output),
 		.Zero(ZERO),
 		.Output(ULAOutput)
-	);
-	
-	InstructionMemory uu4(
-		.ReadAddress(PC),
-		.Instruction(Instruction)
 	);
 	
 	MUX_4Bits uu5(
@@ -147,11 +153,14 @@ module TestProcessor;
 		.S(Jump),
 		.Output(PCInput)
 	);
+	
+	
 
 	initial begin
 		// Initialize Inputs
-		PC = 'b00000000000000000000000000000000;
 		Clk = 1;
+		
+		
 		// Wait 100 ns for global reset to finish
 		#100;
         
@@ -159,18 +168,8 @@ module TestProcessor;
 
 	end
 	
-	always Clk = #100 ~Clk; 
+	always Clk = #200 ~Clk; 
 	
-	always @(PCInput)
-		begin
-			PC <= PCInput;
-		end
-	
-	always @(posedge Clk)
-		begin
-			if(PC < 'd5)
-				PC <= PC + 1;
-		end
       
 endmodule
 

@@ -19,74 +19,157 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module MipsProcessor(
-		input instAddress,
-		output pc,
-		output pcInput,
-		output instWire
-		/*output shiftWire,
-		output shiftWire2,
-		output mux1_I1,
-		output mux1_S,
-		output mux1_O,
-		output mux2_O,
-		output writeData,
-		output readData1,
-		output readData2,
-		output signWire,
-		output adder1_i,
-		output adder1_o,
-		output adder2_o*/
+
     );
 	 
+reg Clk;
 
-wire [31:0] pc;
+	// Outputs
+	wire [31:0] Instruction;
+	wire [3:0] Output;
+	wire RegDst;
+   wire Jump;
+   wire Branch;
+   wire MemRead;
+   wire MemToReg;
+   wire MemWrite;
+   wire ALUSrc;
+   wire RegWrite;
+	wire [2:0] ALUOp;
+	wire ZERO;
+	wire [31:0] ULAOutput;
+	wire [31:0] PCInput;
+	reg [31:0] PC;
+	wire [4:0] WriteRegister;
+	wire [31:0] WriteData;
+	wire [31:0] RegisterData2;	
+	wire [31:0] ULAData1;
+	wire [31:0] ULAData2;
+	wire [31:0] SignExtended;
+	wire [31:0] MemoryOutput;
+	wire [31:0] MUXOutput;
+	wire [31:0] JumpAddress;
+	
+	// Instantiate the Unit Under Test (UUT)
+	
+	assign JumpAddress = {{6{Instruction[25]}}, Instruction[25:0]};
+	
+	ALUControl uut (
+		.OpCode(Instruction[5:0]), 
+		.ALUOp(ALUOp), 
+		.Output(Output)
+	);
+	
+	Control uu2(
+		.Instruction(Instruction),
+		.RegDst(RegDst),
+		.Jump(Jump),
+		.Branch(Branch),
+		.MemRead(MemRead),
+		.MemToReg(MemToReg),
+		.ALUOp(ALUOp),
+		.MemWrite(MemWrite),
+		.ALUSrc(ALUSrc),
+		.RegWrite(RegWrite)
+	);
+	
+	ULA uu3(
+		.Data1(ULAData1),
+		.Data2(ULAData2),
+		.Control(Output),
+		.Zero(ZERO),
+		.Output(ULAOutput)
+	);
+	
+	InstructionMemory uu4(
+		.ReadAddress(PC),
+		.Instruction(Instruction)
+	);
+	
+	MUX_4Bits uu5(
+		.Input0(Instruction[20:16]),
+		.Input1(Instruction[15:11]),
+		.S(RegDst),
+		.Output(WriteRegister)
+	);
+	
+	RegisterBank uu6(
+		.ReadRegister1(Instruction[25:21]),
+		.ReadRegister2(Instruction[20:16]),
+		.WriteRegister(WriteRegister),
+		.WriteData(WriteData),
+		.RegWrite(RegWrite),
+		.ReadData1(ULAData1),
+		.ReadData2(RegisterData2)
+	);
+	
+	SignExtend uu7(
+		.Input(Instruction[15:0]),
+		.Output(SignExtended)
+	);
+	
+	MUX uu8(
+		.I1(RegisterData2),
+		.I2(SignExtended),
+		.S(ALUSrc),
+		.Output(ULAData2)
+	);
+	
+	DataMemory uu9(
+		.Address(ULAOutput),
+		.WriteData(RegisterData2),
+		.ReadData(MemoryOutput),
+		.MemRead(MemRead),
+		.MemWrite(MemWrite)
+	);
+	
+	MUX uu10(
+		.I1(ULAOutput),
+		.I2(MemoryOutput),
+		.S(MemToReg),
+		.Output(WriteData)
+	);	
+	
+	MUX uu14(
+		.I1(PC),
+		.I2(SignExtended),
+		.S(Branch & ZERO),
+		.Output(MUXOutput)
+	);
+	
+	MUX uu15(
+		.I1(MUXOutput),
+		.I2(JumpAddress),
+		.S(Jump),
+		.Output(PCInput)
+	);
+	
+	
 
-wire regDst;
-wire regWrite;
-wire branch;
+	initial begin
+		// Initialize Inputs
+		PC = 'b00000000000000000000000000000000;
+		Clk = 1;
+		
+		// Wait 100 ns for global reset to finish
+		#100;
+        
+		// Add stimulus here
 
-wire ALUZero;
-
-wire [31:0] instAddress;
-wire [31:0] instWire;
-
-wire [31:0] pcInput;
-
-PC programCounter(pcInput, pc);
-
-InstructionMemory instructionMemory(instAddress, instWire);
-
-wire [31:0] shiftWire;
-ShiftLeft shiftLeft(instWire,shiftWire);
-
-wire [31:0]mux1_I1;
-wire mux1_S;
-MUX mux1(shiftWire, mux1_I1, mux1_S, pcInput);
-
-wire [31:0] mux2_O;
-MUX mux2(instWire[20:16], instWire[15:11], regDst, mux2_O);
-
-wire [31:0] writeData;
-wire [31:0] readData1;
-wire [31:0] readData2;
-RegisterBank registerBank(instWire[25:21], instWire[20:16], mux2_O, writeData, regWrite, readData1, readData2);
-
-wire [31:0] signWire;
-SignExtend signExtend(instWire[15:0], signWire);
-
-wire [31:0] shiftWire2;
-ShiftLeft shiftLeft2(signWire, shiftWire2);
-
-wire [31:0] adder1_i;
-wire [31:0] adder1_o;
-Adder adder1(pc, adder1_i, adder1_o);
-
-wire [31:0] adder2_o;
-Adder adder2(shiftWire2, adder1_o, adder2_o);
-
-MUX mux3(adder1_o, adder2_o, branch & ALUZero, mux1_I1); 
-
-
+	end
+	
+	always Clk = #100 ~Clk; 
+	
+	always @(PCInput)
+		begin
+			PC = PCInput;
+		end
+	
+	always @(posedge Clk)
+		begin
+			if(PC < 'd5)
+				PC <= PC + 1;
+		end
 endmodule
 
 

@@ -24,7 +24,7 @@ module ALUControl(
     output reg [3:0] Output
     );
 
-always @(OpCode or ALUOp)
+always @(ALUOp or OpCode)
 	begin		
 		if(ALUOp == 'b010)// Tipo R
 			begin
@@ -55,6 +55,10 @@ always @(OpCode or ALUOp)
 		else if(ALUOp == 'b100) // slti
 			begin
 				Output = 'b0111;
+			end
+		else if(ALUOp == 'b000) // J
+			begin
+				Output = 'b1111; //NOP
 			end
 	end
 

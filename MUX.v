@@ -29,7 +29,7 @@ module MUX(
 		begin			
 			if(S == 0)
 				Output = I1;
-			else
+			else if(S == 1)
 				Output = I2;
 				
 		end

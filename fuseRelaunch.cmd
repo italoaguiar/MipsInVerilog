@@ -1,1 +1,0 @@
--intstyle "ise" -incremental -lib "unisims_ver" -lib "unimacro_ver" -lib "xilinxcorelib_ver" -lib "secureip" -o "/home/ise/Desktop/Trabalho_OACII/TPOACII/TestProcessor_isim_beh.exe" -prj "/home/ise/Desktop/Trabalho_OACII/TPOACII/TestProcessor_beh.prj" "work.TestProcessor" "work.glbl" 

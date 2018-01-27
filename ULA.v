@@ -25,6 +25,7 @@ module ULA(
     output Zero,
     output reg[31:0] Output
     );
+	 
 
 reg Ovf;
 wire Overflow;
@@ -32,17 +33,17 @@ wire Overflow;
 assign Overflow = Ovf;
 assign Zero = (0 == Output);
 
-always @(Data1 or Data2 or Control)
+always @(Data1 or Data2)
 	begin
 		case(Control)
-			'b0000: Output = Data1 & Data2;          //and
-			'b0001: Output = Data1 | Data2;          //or
-			'b0010: {Ovf, Output} = Data1 + Data2;   //add
-			'b0110: {Ovf, Output} = Data1 - Data2;   //sub
-			'b1110: Output = (Data1 - Data2) == 0;   //dif
-			'b0111: Output = Data1 < Data2;          //slt
-			'b1100: Output = ~(Data1 | Data2);       //nor
-			'b1101: Output = Data1 ^ Data2;          //xor
+			'b0000: Output = Data1 & Data2;                  //and
+			'b0001: Output = Data1 | Data2;                  //or
+			'b0010: {Ovf, Output} = Data1 + Data2;           //add
+			'b0110: {Ovf, Output} = Data1 - Data2;           //sub
+			'b1110: Output = (Data1 - Data2) == 0;           //dif
+			'b0111: Output = (Data1 < Data2)? 31'b1: 31'b0;  //slt
+			'b1100: Output = ~(Data1 | Data2);               //nor
+			'b1101: Output = Data1 ^ Data2;                  //xor
 		endcase
 	end
 

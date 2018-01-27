@@ -30,34 +30,45 @@ module Control(
     output reg ALUSrc,
     output reg RegWrite
     );
+	 
+
 
 always @(Instruction)
 	begin
+		RegDst = 0;
+		Jump = 0;
+		Branch = 0;
+		MemRead = 0;
+		MemToReg = 0;
+		MemWrite = 0;
+		ALUSrc = 0;
+		RegWrite = 0;
+		ALUOp = 'b000;
 		if(Instruction[31:26] == 'b000000)//tipo R
 			begin
+				ALUOp = 'b010;
 				RegDst = 1;
 				Jump = 0;
 				Branch = 0;
 				MemRead = 0;
-				MemToReg = 0;
-				ALUOp = 'b010;
+				MemToReg = 0;				
 				MemWrite = 0;
 				ALUSrc = 0;
-				RegWrite = 1;
+				RegWrite = 1;				
 			end
-		if(Instruction[31:26] == 'b100011)//lw
+		else if(Instruction[31:26] == 'b100011)//lw
 			begin
 				RegDst = 0;
 				Jump = 0;
 				Branch = 0;
 				MemRead = 1;
-				MemToReg = 1;
-				ALUOp = 'b000;
+				MemToReg = 1;				
 				MemWrite = 0;
 				ALUSrc = 1;
 				RegWrite = 1;
+				ALUOp = 'b000;
 			end
-		if(Instruction[31:26] == 'b101011)//sw
+		else if(Instruction[31:26] == 'b101011)//sw
 			begin
 				RegDst = 0;
 				Jump = 0;
@@ -69,19 +80,19 @@ always @(Instruction)
 				ALUSrc = 1;
 				RegWrite = 0;
 			end
-		if(Instruction[31:26] =='b000100)//beq
+		else if(Instruction[31:26] =='b000100)//beq
 			begin
 				RegDst = 0;
 				Jump = 0;
 				Branch = 1;
 				MemRead = 0;
-				MemToReg = 0;
-				ALUOp = 'b001;
+				MemToReg = 0;				
 				MemWrite = 0;
 				ALUSrc = 0;
 				RegWrite = 0;
+				ALUOp = 'b001;
 			end
-		if(Instruction[31:26] == 'b001000)//addi
+		else if(Instruction[31:26] == 'b001000)//addi
 			begin
 				RegDst = 0;
 				Branch = 0;
@@ -93,7 +104,7 @@ always @(Instruction)
 				Jump = 0;
 				ALUOp = 'b011;
 			end
-		if(Instruction[31:26] == 'b001010)//slti
+		else if(Instruction[31:26] == 'b001010)//slti
 			begin
 				RegDst = 0;
 				Branch = 0;
@@ -105,7 +116,7 @@ always @(Instruction)
 				Jump = 0;
 				ALUOp = 'b100;
 			end
-		if(Instruction[31:26] == 'b000101)//bne
+		else if(Instruction[31:26] == 'b000101)//bne
 			begin
 				Branch = 1;
 				MemRead = 0;
@@ -115,13 +126,13 @@ always @(Instruction)
 				Jump = 0;
 				ALUOp = 'b101;
 			end
-		if(Instruction[31:26] == 'b000010)//jump
-			begin
-				Jump = 1;
-				MemRead = 0;
-				ALUOp = 'b000;
+		else if(Instruction[31:26] == 'b000010)//jump
+			begin				
+				MemRead = 0;				
 				MemWrite = 0;
 				RegWrite = 0;
+				Jump = 1;
+				ALUOp = 'b000;
 			end
 	end
 
