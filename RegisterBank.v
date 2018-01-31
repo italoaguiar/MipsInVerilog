@@ -51,11 +51,11 @@ module RegisterBank(
 	always @(ReadRegister1 or ReadRegister2)
 		begin				
 			ReadData1 = RegisterMemory[ReadRegister1];
-			ReadData2 = RegisterMemory[ReadRegister2];				
+			ReadData2 = RegisterMemory[ReadRegister2];	
 			
 		end
 		
-	always @(posedge RegWrite or WriteData)
+	always @(posedge RegWrite or WriteData or WriteRegister)
 		begin
 			RegisterMemory[WriteRegister] = WriteData;
 			$display("Escrevendo Registrador $t%d: %d", WriteRegister, WriteData);

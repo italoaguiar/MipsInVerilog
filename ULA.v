@@ -33,7 +33,7 @@ wire Overflow;
 assign Overflow = Ovf;
 assign Zero = (0 == Output);
 
-always @(Data1 or Data2)
+always @(Data1 or Data2 or Control)
 	begin
 		case(Control)
 			'b0000: Output = Data1 & Data2;                  //and

@@ -1,0 +1,30 @@
++-------------------------------------------------+
+|            #  # ####  ##   ####                 |  
+|            #  # #    #  #  #  #                 |
+|            #  # ###  #  #  ###                  |
+|            #  # #    #  #  #                    |
+|             ##  #     ##   #                    |
+|    Universidade Federal de Ouro Preto - UFOP    |
+| Instituto de Ciências Exatas e Aplicadas - ICEA |
++-------------------------------------------------+
+
+
+  Implementação do Processador MIPS em Verilog
+===================================================
+
+Autores: Ítalo A. Aguiar 
+         Pedro Medeiros 
+         Matheus Fellipe
+
+
+Instruções: Configure a IDE XILINX para utilizar o
+            arquivo TestProcessor.v como testbench
+            do projeto. InstructionMemory.v contém
+            5  programas de exemplo  que devem ser
+            descomentados para teste individual de
+            cada uma das instruções suportadas  no
+            projeto.
+
+            Descomente  somente 1 projeto por vez,
+            voltando a comentá-lo ao testar outros
+ 

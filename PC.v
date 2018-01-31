@@ -49,6 +49,7 @@ module PC(
 			if(Input !== 32'bx && Input > 0)
 				begin
 					_pc = Input;
+					$display("Salto programado: %d", Input);
 				end
 		end
 
